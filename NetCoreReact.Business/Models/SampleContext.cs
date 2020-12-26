@@ -50,9 +50,19 @@ namespace NetCoreReact.Business.Models
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
                 entity.Property(e => e.Username)
                     .IsRequired()
                     .HasMaxLength(255);
+
+                entity.HasOne(d => d.RoleNavigation)
+                    .WithMany(p => p.User)
+                    .HasForeignKey(d => d.Role)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_User_Role");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using NetCoreReact.Business.Models;
 using NetCoreReact.Business.Models.Entity;
 using NetCoreReact.Business.Repositories;
 using System;
@@ -18,7 +19,7 @@ namespace NetCoreReact.Business.UnitOfWork
         public IBaseRepository<User> UserRepository { get; private set; }
         public IBaseRepository<Role> RoleRepository { get; private set; }
 
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(SampleContext context)
         {
             _context = context;
 
