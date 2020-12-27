@@ -17,19 +17,19 @@ namespace NetCoreReact.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly string JwtSecret;
+        private readonly string _jwtSecret;
 
-        private readonly int JwtLifespan;
+        private readonly int _jwtLifespan;
 
         public AuthService(string jwtSecret, int jwtLifespan)
         {
-            this.JwtSecret = jwtSecret;
-            this.JwtLifespan = jwtLifespan;
+            this._jwtSecret = jwtSecret;
+            this._jwtLifespan = jwtLifespan;
         }
 
         public AuthData GetAuthData(User user)
         {
-            var expirationTime = DateTime.UtcNow.AddSeconds(JwtLifespan);
+            var expirationTime = DateTime.UtcNow.AddSeconds(_jwtLifespan);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -40,7 +40,7 @@ namespace NetCoreReact.Services
                     new Claim(ClaimTypes.Role, user.RoleNavigation.Code.ToString())
                 }),
                 Expires = expirationTime,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSecret)), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret)), SecurityAlgorithms.HmacSha256Signature)
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));

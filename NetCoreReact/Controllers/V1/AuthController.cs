@@ -20,21 +20,21 @@ namespace NetCoreReact.Controllers
     [Route("api/v1/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IUnitOfWork UnitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        private readonly IAuthService AuthService;
+        private readonly IAuthService _authService;
 
         public AuthController(IUnitOfWork unitOfWork, IAuthService authService)
         {
-            this.UnitOfWork = unitOfWork;
-            this.AuthService = authService;
+            this._unitOfWork = unitOfWork;
+            this._authService = authService;
         }
 
         [HttpPost("login")]
         [ProducesResponseType(typeof(Response<LoginResponse>), 200)]
         public ActionResult<Response> Login([FromBody] LoginRequest model)
         {
-            var user = UnitOfWork.UserRepository.GetSingle(
+            var user = _unitOfWork.UserRepository.GetSingle(
                 x => x.Username == model.Username,
                 x => x.Include(i => i.RoleNavigation));
 
@@ -43,12 +43,12 @@ namespace NetCoreReact.Controllers
                 return BadRequest(new Response(HttpStatusCode.BadRequest, "Invalid credential"));
             }
 
-            if (!AuthService.VerifyPassword(model.Password, user.Password, Convert.FromBase64String(user.Salt)))
+            if (!_authService.VerifyPassword(model.Password, user.Password, Convert.FromBase64String(user.Salt)))
             {
                 return BadRequest(new Response(HttpStatusCode.BadRequest, "Invalid credential"));
             }
 
-            var authData = AuthService.GetAuthData(user);
+            var authData = _authService.GetAuthData(user);
 
             var data = new LoginResponse()
             {
@@ -58,18 +58,18 @@ namespace NetCoreReact.Controllers
                 TokenExpirationTime = authData.TokenExpirationTime
             };
 
-            return new Response(HttpStatusCode.OK, data);
+            return Ok(new Response(HttpStatusCode.OK, data));
         }
 
         [HttpPost("change-password")]
         [ProducesResponseType(typeof(Response<ChangePasswordResponse>), 200)]
         public ActionResult<Response> ChangePassword([FromBody] ChangePasswordRequest model)
         {
-            var user = UnitOfWork.UserRepository.GetSingle(
+            var user = _unitOfWork.UserRepository.GetSingle(
                x => x.Username == model.Username,
                x => x.Include(i => i.RoleNavigation));
 
-            var password = AuthService.HashPassword(model.Password, out byte[] salt);
+            var password = _authService.HashPassword(model.Password, out byte[] salt);
 
             if (user == null)
             {
@@ -79,9 +79,9 @@ namespace NetCoreReact.Controllers
             user.Password = password;
             user.Salt = Convert.ToBase64String(salt);
 
-            UnitOfWork.SaveChanges();
+            _unitOfWork.SaveChanges();
 
-            return new Response(HttpStatusCode.OK);
+            return Ok(new Response(HttpStatusCode.OK));
         }
 
     }
