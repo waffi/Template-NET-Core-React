@@ -19,8 +19,8 @@ namespace NetCoreReact.Test.Fixture
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-            var jwtSecret = config["JWT:SecretKey"];
-            var jwtLifespan = int.Parse(config["JWT:Lifespan"]);
+            var jwtSecret = config.GetValue<string>("JWT:SecretKey");
+            var jwtLifespan = config.GetValue<int>("JWT:Lifespan");
 
             AuthService = new AuthService(jwtSecret, jwtLifespan);
         }

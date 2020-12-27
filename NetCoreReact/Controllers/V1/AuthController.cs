@@ -26,8 +26,8 @@ namespace NetCoreReact.Controllers
 
         public AuthController(IUnitOfWork unitOfWork, IAuthService authService)
         {
-            this._unitOfWork = unitOfWork;
-            this._authService = authService;
+            _unitOfWork = unitOfWork;
+            _authService = authService;
         }
 
         [HttpPost("login")]

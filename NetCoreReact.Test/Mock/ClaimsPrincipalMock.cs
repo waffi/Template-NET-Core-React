@@ -14,9 +14,9 @@ namespace NetCoreReact.Test.Mock
 
             return new ClaimsPrincipal(new ClaimsIdentity(new Claim[] 
             {                                        
-                new Claim(ClaimTypes.NameIdentifier, config["AuthorizedUser:Identifier"]),
-                new Claim(ClaimTypes.Name, config["AuthorizedUser:Name"]),
-                new Claim(ClaimTypes.Role, config["AuthorizedUser:Role"]),
+                new Claim(ClaimTypes.NameIdentifier, config.GetValue<string>("AuthorizedUser:Identifier")),
+                new Claim(ClaimTypes.Name, config.GetValue<string>("AuthorizedUser:Name")),
+                new Claim(ClaimTypes.Role, config.GetValue<string>("AuthorizedUser:Role")),
             }));
         }
     }

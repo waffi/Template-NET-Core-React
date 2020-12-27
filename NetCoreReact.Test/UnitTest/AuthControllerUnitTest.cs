@@ -14,13 +14,14 @@ using Xunit;
 
 namespace NetCoreReact.Test.UnitTest
 {
-    public class AuthControllerUnitTest : IClassFixture<UnitOfWorkFixture>, IClassFixture<AuthServiceFixture>
+    [Collection("UnitOfWork")]
+    public class AuthControllerUnitTest : IClassFixture<AuthServiceFixture>
     {
         private readonly AuthController _authController;
 
         public AuthControllerUnitTest(UnitOfWorkFixture unitOfWorkFixture, AuthServiceFixture authServiceFixture)
         {
-            this._authController = new AuthController(unitOfWorkFixture.UnitOfWork, authServiceFixture.AuthService);
+            _authController = new AuthController(unitOfWorkFixture.UnitOfWork, authServiceFixture.AuthService);
         }
 
         [Fact]

@@ -16,15 +16,16 @@ using Xunit;
 
 namespace NetCoreReact.Test.UnitTest
 {
-    public class UserControllerUnitTest : IClassFixture<UnitOfWorkFixture>, IClassFixture<AuthServiceFixture>
+    [Collection("UnitOfWork")]
+    public class UserControllerUnitTest : IClassFixture<AuthServiceFixture>
     {
         private readonly UserController _userController;
 
         public UserControllerUnitTest(UnitOfWorkFixture unitOfWorkFixture, AuthServiceFixture authServiceFixture)
         {
-            this._userController = new UserController(unitOfWorkFixture.UnitOfWork, authServiceFixture.AuthService);
-            this._userController.ControllerContext = new ControllerContext();
-            this._userController.ControllerContext.HttpContext = new DefaultHttpContext { User = ClaimsPrincipalMock.User() };
+            _userController = new UserController(unitOfWorkFixture.UnitOfWork, authServiceFixture.AuthService);
+            _userController.ControllerContext = new ControllerContext();
+            _userController.ControllerContext.HttpContext = new DefaultHttpContext { User = ClaimsPrincipalMock.User() };
         }
 
         [Fact]

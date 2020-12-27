@@ -30,8 +30,8 @@ namespace NetCoreReact.Controllers
 
         public UserController(IUnitOfWork unitOfWork, IAuthService authService)
         {
-            this._unitOfWork = unitOfWork;
-            this._authService = authService;
+            _unitOfWork = unitOfWork;
+            _authService = authService;
         }
 
         [HttpPost("change-password")]

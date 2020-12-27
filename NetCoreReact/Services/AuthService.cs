@@ -31,8 +31,8 @@ namespace NetCoreReact.Services
 
         public AuthService(string jwtSecret, int jwtLifespan)
         {
-            this._jwtSecret = jwtSecret;
-            this._jwtLifespan = jwtLifespan;
+            _jwtSecret = jwtSecret;
+            _jwtLifespan = jwtLifespan;
         }
 
         public AuthData GetAuthData(User user)
