@@ -29,7 +29,30 @@ namespace NetCoreReact.Test.UnitTest
         }
 
         [Fact]
-        public void ChangePassword()
+        public void CreateAndDelete()
+        {
+            var body = new CreateUserRequest()
+            {
+                Role = Guid.Parse("55201968-F7A4-481B-991A-92E69383F372"),
+                Username = "newUser",
+                Password = "newUser123",
+            };
+
+            var actionResult1 = _userController.Create(body);
+            var objectResult1 = (ObjectResult)actionResult1.Result;
+            var objectResultValue1 = (Response)objectResult1.Value;
+
+            Assert.True(objectResult1.StatusCode == (int)HttpStatusCode.OK, objectResultValue1.Message);
+
+            var actionResult2 = _userController.Delete(((CreateUserResponse)objectResultValue1.Data).Id);
+            var objectResult2 = (ObjectResult)actionResult2.Result;
+            var objectResultValue2 = (Response)objectResult2.Value;
+
+            Assert.True(objectResult2.StatusCode == (int)HttpStatusCode.OK, objectResultValue2.Message);
+        }
+
+        [Fact]
+        public void UpdatePassword()
         {
             var body = new UpdatePasswordUserRequest()
             {
@@ -45,7 +68,7 @@ namespace NetCoreReact.Test.UnitTest
         }
 
         [Fact]
-        public void ChangePasswordByAdmin()
+        public void ResetPassword()
         {
             var id = Guid.Parse("0528BD60-3D92-43CC-BFB4-A0D117D65CB6");
 

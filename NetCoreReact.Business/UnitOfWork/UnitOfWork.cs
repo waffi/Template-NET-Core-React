@@ -28,7 +28,7 @@ namespace NetCoreReact.Business.UnitOfWork
 
         public void SetIdentity(ClaimsIdentity identity)
         {
-
+            UserRepository.SetIdentity(identity);
         }
 
         public void SaveChanges()

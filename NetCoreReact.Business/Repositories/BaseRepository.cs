@@ -136,7 +136,6 @@ namespace NetCoreReact.Business.Repositories
                 PropertyInfo modifiedBy = type.GetProperty("ModifiedBy");
                 PropertyInfo modifiedDate = type.GetProperty("ModifiedDate");
 
-                Console.WriteLine(_identity.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
                 modifiedBy.SetValue(entity, Guid.Parse(_identity.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value));
                 modifiedDate.SetValue(entity, DateTime.UtcNow);
             }

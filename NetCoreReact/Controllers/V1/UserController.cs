@@ -34,11 +34,42 @@ namespace NetCoreReact.Controllers
             _authService = authService;
         }
 
+        [HttpPost("create")]
+        [ProducesResponseType(typeof(Response<CreateUserResponse>), 200)]
+        public ActionResult<Response> Create([FromBody] CreateUserRequest model)
+        {
+            var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            _unitOfWork.SetIdentity(identity);
+
+            var user = new User()
+            {
+                Role = model.Role,
+                Username = model.Username,
+                Password = _authService.HashPassword(model.Password, out byte[] salt),
+                Salt = Convert.ToBase64String(salt),
+            };
+
+            _unitOfWork.UserRepository.Add(user);
+            _unitOfWork.SaveChanges();
+
+            var data = new CreateUserResponse()
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Role = user.RoleNavigation.Code,
+            };
+
+            return Ok(new Response(HttpStatusCode.OK, data));
+        }
+
         [HttpPost("update-password")]
         [ProducesResponseType(typeof(Response<UpdatePasswordUserResponse>), 200)]
         public ActionResult<Response> UpdatePassword([FromBody] UpdatePasswordUserRequest model)
         {
             var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            _unitOfWork.SetIdentity(identity);
 
             var user = _unitOfWork.UserRepository.GetSingle(
                x => x.Username == identity.Name,
@@ -59,6 +90,7 @@ namespace NetCoreReact.Controllers
             user.Password = password;
             user.Salt = Convert.ToBase64String(salt);
 
+            _unitOfWork.UserRepository.Update(user);
             _unitOfWork.SaveChanges();
 
             return Ok(new Response(HttpStatusCode.OK));
@@ -70,6 +102,8 @@ namespace NetCoreReact.Controllers
         public ActionResult<Response> ResetPassword([FromRoute] Guid id, [FromBody] ResetPasswordUserRequest model)
         {
             var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            _unitOfWork.SetIdentity(identity);
 
             var user = _unitOfWork.UserRepository.GetSingle(
                x => x.Id == id,
@@ -85,11 +119,34 @@ namespace NetCoreReact.Controllers
             user.Password = password;
             user.Salt = Convert.ToBase64String(salt);
 
+            _unitOfWork.UserRepository.Update(user);
             _unitOfWork.SaveChanges();
 
             return Ok(new Response(HttpStatusCode.OK));
         }
 
+        [HttpPost("delete/{id}")]
+        [ProducesResponseType(typeof(Response<DeleteUserResponse>), 200)]
+        public ActionResult<Response> Delete([FromRoute] Guid id)
+        {
+            var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            _unitOfWork.SetIdentity(identity);
+
+            var user = _unitOfWork.UserRepository.GetSingle(id);
+
+            _unitOfWork.UserRepository.Delete(user);
+            _unitOfWork.SaveChanges();
+
+            var data = new DeleteUserResponse()
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Role = user.RoleNavigation.Code,
+            };
+
+            return Ok(new Response(HttpStatusCode.OK, data));
+        }
     }
 
 }
