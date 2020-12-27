@@ -14,11 +14,11 @@ using Xunit;
 
 namespace NetCoreReact.Test.UnitTest
 {
-    public class AuthController_UnitTest : IClassFixture<UnitOfWorkFixture>, IClassFixture<AuthServiceFixture>
+    public class AuthControllerUnitTest : IClassFixture<UnitOfWorkFixture>, IClassFixture<AuthServiceFixture>
     {
         private readonly AuthController _authController;
 
-        public AuthController_UnitTest(UnitOfWorkFixture unitOfWorkFixture, AuthServiceFixture authServiceFixture)
+        public AuthControllerUnitTest(UnitOfWorkFixture unitOfWorkFixture, AuthServiceFixture authServiceFixture)
         {
             this._authController = new AuthController(unitOfWorkFixture.UnitOfWork, authServiceFixture.AuthService);
         }
@@ -29,26 +29,10 @@ namespace NetCoreReact.Test.UnitTest
             var body = new LoginRequest()
             {
                 Username = "admin",
-                Password = "admin123"
+                Password = "admin123",
             };
 
             var actionResult = _authController.Login(body);
-            var objectResult = (ObjectResult)actionResult.Result;
-            var objectResultValue = (Response)objectResult.Value;
-
-            Assert.True(objectResult.StatusCode == (int)HttpStatusCode.OK, objectResultValue.Message);
-        }
-
-        [Fact]
-        public void ChangePassword()
-        {
-            var body = new ChangePasswordRequest()
-            {
-                Username = "admin",
-                Password = "admin123"
-            };
-
-            var actionResult = _authController.ChangePassword(body);
             var objectResult = (ObjectResult)actionResult.Result;
             var objectResultValue = (Response)objectResult.Value;
 

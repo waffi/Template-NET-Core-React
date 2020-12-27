@@ -4,15 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetCoreReact.Models.Request.Auth
+namespace NetCoreReact.Models.Request.User
 {
     public class ChangePasswordRequest
     {
         [Required]
-        public string Username { get; set; }
-
+        public string OldPassword { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string NewPassword { get; set; }
     }
 
 }

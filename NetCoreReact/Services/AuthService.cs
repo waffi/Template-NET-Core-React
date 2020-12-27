@@ -15,6 +15,14 @@ using System.Threading.Tasks;
 
 namespace NetCoreReact.Services
 {
+    public class AuthData
+    {
+        public string Username { get; set; }
+        public string Role { get; set; }
+        public string Token { get; set; }
+        public long TokenExpirationTime { get; set; }
+    }
+
     public class AuthService : IAuthService
     {
         private readonly string _jwtSecret;
@@ -37,10 +45,10 @@ namespace NetCoreReact.Services
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Username.ToString()),
-                    new Claim(ClaimTypes.Role, user.RoleNavigation.Code.ToString())
+                    new Claim(ClaimTypes.Role, user.RoleNavigation.Code.ToString()),
                 }),
                 Expires = expirationTime,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret)), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret)), SecurityAlgorithms.HmacSha256Signature),
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
@@ -50,7 +58,7 @@ namespace NetCoreReact.Services
                 Username = user.Username,
                 Role = user.RoleNavigation.Code,
                 Token = token,
-                TokenExpirationTime = ((DateTimeOffset)expirationTime).ToUnixTimeSeconds()
+                TokenExpirationTime = ((DateTimeOffset)expirationTime).ToUnixTimeSeconds(),
             };
         }
 

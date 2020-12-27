@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace NetCoreReact.Models.Response.Auth
+namespace NetCoreReact.Models.Response.User
 {
     public class ChangePasswordResponse
     {

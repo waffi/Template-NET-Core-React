@@ -55,35 +55,11 @@ namespace NetCoreReact.Controllers
                 Username = authData.Username,
                 Role = authData.Role,
                 Token = authData.Token,
-                TokenExpirationTime = authData.TokenExpirationTime
+                TokenExpirationTime = authData.TokenExpirationTime,
             };
 
             return Ok(new Response(HttpStatusCode.OK, data));
         }
-
-        [HttpPost("change-password")]
-        [ProducesResponseType(typeof(Response<ChangePasswordResponse>), 200)]
-        public ActionResult<Response> ChangePassword([FromBody] ChangePasswordRequest model)
-        {
-            var user = _unitOfWork.UserRepository.GetSingle(
-               x => x.Username == model.Username,
-               x => x.Include(i => i.RoleNavigation));
-
-            var password = _authService.HashPassword(model.Password, out byte[] salt);
-
-            if (user == null)
-            {
-                return BadRequest(new Response(HttpStatusCode.BadRequest, "User not found"));
-            }
-
-            user.Password = password;
-            user.Salt = Convert.ToBase64String(salt);
-
-            _unitOfWork.SaveChanges();
-
-            return Ok(new Response(HttpStatusCode.OK));
-        }
-
     }
 
 }
