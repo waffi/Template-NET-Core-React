@@ -34,7 +34,7 @@ namespace NetCoreReact.Controllers
             _authService = authService;
         }
 
-        [HttpPost("create")]
+        [HttpPost()]
         [ProducesResponseType(typeof(Response<CreateUserResponse>), 200)]
         public ActionResult<Response> Create([FromBody] CreateUserRequest model)
         {
@@ -65,7 +65,7 @@ namespace NetCoreReact.Controllers
             return Ok(new Response(HttpStatusCode.OK, data));
         }
 
-        [HttpGet("")]
+        [HttpGet()]
         [ProducesResponseType(typeof(Response<List<GetAllUserResponse>>), 200)]
         public ActionResult<Response> GetAll()
         {
@@ -101,6 +101,43 @@ namespace NetCoreReact.Controllers
             }
 
             var data = new GetSingleUserResponse()
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Role = user.RoleNavigation.Code,
+            };
+
+            return Ok(new Response(HttpStatusCode.OK, data));
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(Response<UpdateUserResponse>), 200)]
+        public ActionResult<Response> Update([FromRoute] Guid id, [FromBody] UpdateUserRequest model)
+        {
+            var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            _unitOfWork.SetIdentity(identity);
+
+            var user = _unitOfWork.UserRepository.GetSingle(id);
+
+            if (user == null)
+            {
+                return BadRequest(new Response(HttpStatusCode.BadRequest, "User not found"));
+            }
+
+            var password = _authService.HashPassword(model.Password, out byte[] salt);
+
+            user.Username = model.Username;
+            user.Role = model.Role;
+            user.Password = password;
+            user.Salt = Convert.ToBase64String(salt);
+
+            _unitOfWork.UserRepository.Update(user);
+            _unitOfWork.SaveChanges();
+
+            user = _unitOfWork.UserRepository.GetSingle(user.Id, x => x.Include(i => i.RoleNavigation));
+
+            var data = new UpdateUserResponse()
             {
                 Id = user.Id,
                 Username = user.Username,
@@ -168,7 +205,7 @@ namespace NetCoreReact.Controllers
             return Ok(new Response(HttpStatusCode.OK));
         }
 
-        [HttpDelete("{id}/delete")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Response<DeleteUserResponse>), 200)]
         public ActionResult<Response> Delete([FromRoute] Guid id)
         {

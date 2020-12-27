@@ -74,6 +74,25 @@ namespace NetCoreReact.Test.UnitTest
         }
 
         [Fact]
+        public void Update()
+        {
+            var id = Guid.Parse("0528BD60-3D92-43CC-BFB4-A0D117D65CB6");
+
+            var body = new UpdateUserRequest()
+            {
+                Role = Guid.Parse("55201968-F7A4-481B-991A-92E69383F372"),
+                Username = "admin",
+                Password = "admin123",
+            };
+
+            var actionResult = _userController.Update(id, body);
+            var objectResult = (ObjectResult)actionResult.Result;
+            var objectResultValue = (Response)objectResult.Value;
+
+            Assert.True(objectResult.StatusCode == (int)HttpStatusCode.OK, objectResultValue.Message);
+        }
+
+        [Fact]
         public void UpdatePassword()
         {
             var id = Guid.Parse("0528BD60-3D92-43CC-BFB4-A0D117D65CB6");
