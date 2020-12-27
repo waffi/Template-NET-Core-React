@@ -12,19 +12,18 @@ namespace NetCoreReact.Business.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private DbContext _context;
-
         private IDbContextTransaction _transaction;
 
+        public SampleContext Context { get; private set; }
         public IBaseRepository<User> UserRepository { get; private set; }
         public IBaseRepository<Role> RoleRepository { get; private set; }
 
         public UnitOfWork(SampleContext context)
         {
-            _context = context;
+            Context = context;
 
-            UserRepository = new BaseRepository<User>(_context);
-            RoleRepository = new BaseRepository<Role>(_context);
+            UserRepository = new BaseRepository<User>(Context);
+            RoleRepository = new BaseRepository<Role>(Context);
         }
 
         public void SetIdentity(ClaimsIdentity identity)
@@ -34,12 +33,12 @@ namespace NetCoreReact.Business.UnitOfWork
 
         public void SaveChanges()
         {
-            _context.SaveChanges();
+            Context.SaveChanges();
         }
 
         public void BeginTransaction()
         {
-            _transaction = _context.Database.BeginTransaction();
+            _transaction = Context.Database.BeginTransaction();
         }
 
         public void CommitTransaction()
@@ -49,7 +48,7 @@ namespace NetCoreReact.Business.UnitOfWork
 
         public void Dispose()
         {
-            _context.Dispose();
+            Context.Dispose();
         }
     }
 

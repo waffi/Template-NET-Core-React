@@ -46,6 +46,12 @@ namespace NetCoreReact.Business.Models
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.DeletedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(255);
@@ -57,6 +63,23 @@ namespace NetCoreReact.Business.Models
                 entity.Property(e => e.Username)
                     .IsRequired()
                     .HasMaxLength(255);
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.InverseCreatedByNavigation)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_User_User");
+
+                entity.HasOne(d => d.DeletedByNavigation)
+                    .WithMany(p => p.InverseDeletedByNavigation)
+                    .HasForeignKey(d => d.DeletedBy)
+                    .HasConstraintName("FK_User_User2");
+
+                entity.HasOne(d => d.ModifiedByNavigation)
+                    .WithMany(p => p.InverseModifiedByNavigation)
+                    .HasForeignKey(d => d.ModifiedBy)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_User_User1");
 
                 entity.HasOne(d => d.RoleNavigation)
                     .WithMany(p => p.User)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreReact.Models.Request.Auth
 {
-    public class LoginRequest
+    public class LoginAuthRequest
     {
         [Required]
         public string Username { get; set; }

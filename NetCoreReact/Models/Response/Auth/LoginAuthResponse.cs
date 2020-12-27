@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreReact.Models.Response.Auth
 {
-    public class LoginResponse
+    public class LoginAuthResponse
     {
         public string Username { get; set; }
         public string Role { get; set; }

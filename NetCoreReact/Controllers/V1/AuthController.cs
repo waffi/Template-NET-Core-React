@@ -31,8 +31,8 @@ namespace NetCoreReact.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(Response<LoginResponse>), 200)]
-        public ActionResult<Response> Login([FromBody] LoginRequest model)
+        [ProducesResponseType(typeof(Response<LoginAuthResponse>), 200)]
+        public ActionResult<Response> Login([FromBody] LoginAuthRequest model)
         {
             var user = _unitOfWork.UserRepository.GetSingle(
                 x => x.Username == model.Username,
@@ -50,7 +50,7 @@ namespace NetCoreReact.Controllers
 
             var authData = _authService.GetAuthData(user);
 
-            var data = new LoginResponse()
+            var data = new LoginAuthResponse()
             {
                 Username = authData.Username,
                 Role = authData.Role,

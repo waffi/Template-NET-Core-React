@@ -14,13 +14,11 @@ namespace NetCoreReact.Test.Mock
         {
             var role = new Role()
             {
+                Id = Guid.Parse("55201968-F7A4-481B-991A-92E69383F372"),
                 Name = "Administrator",
                 Code = "ADMIN",
             };
-            unitofwork.RoleRepository.Add(role);
-
-            // Set explicit Id
-            role.Id = Guid.Parse("55201968-F7A4-481B-991A-92E69383F372");
+            unitofwork.Context.Role.Add(role);
 
             unitofwork.SaveChanges();
         }

@@ -34,9 +34,9 @@ namespace NetCoreReact.Controllers
             _authService = authService;
         }
 
-        [HttpPost("change-password")]
-        [ProducesResponseType(typeof(Response<ChangePasswordResponse>), 200)]
-        public ActionResult<Response> ChangePassword([FromBody] ChangePasswordRequest model)
+        [HttpPost("update-password")]
+        [ProducesResponseType(typeof(Response<UpdatePasswordUserResponse>), 200)]
+        public ActionResult<Response> UpdatePassword([FromBody] UpdatePasswordUserRequest model)
         {
             var identity = (ClaimsIdentity)HttpContext.User.Identity;
 
@@ -65,9 +65,9 @@ namespace NetCoreReact.Controllers
         }
 
         [Authorize(Roles = UserRole.Admin)]
-        [HttpPost("{id}/change-password")]
-        [ProducesResponseType(typeof(Response<ChangePasswordByAdminResponse>), 200)]
-        public ActionResult<Response> ChangePasswordByAdmin([FromRoute] Guid id, [FromBody] ChangePasswordByAdminRequest model)
+        [HttpPost("reset-password/{id}")]
+        [ProducesResponseType(typeof(Response<ResetPasswordUserResponse>), 200)]
+        public ActionResult<Response> ResetPassword([FromRoute] Guid id, [FromBody] ResetPasswordUserRequest model)
         {
             var identity = (ClaimsIdentity)HttpContext.User.Identity;
 

@@ -27,7 +27,7 @@ namespace NetCoreReact.Test.UnitTest
         [Fact]
         public void Login()
         {
-            var body = new LoginRequest()
+            var body = new LoginAuthRequest()
             {
                 Username = "admin",
                 Password = "admin123",

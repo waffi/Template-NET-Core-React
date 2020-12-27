@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreReact.Models.Response.User
 {
-    public class ChangePasswordByAdminResponse
+    public class UpdatePasswordUserResponse
     {
 
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreReact.Models.Request.User
 {
-    public class ChangePasswordRequest
+    public class UpdatePasswordUserRequest
     {
         [Required]
         public string OldPassword { get; set; }
