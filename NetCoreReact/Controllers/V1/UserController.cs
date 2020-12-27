@@ -21,7 +21,7 @@ namespace NetCoreReact.Controllers
     [Authorize]
     [ApiController]
     [ApiExplorerSettings(GroupName = "v1")]
-    [Route("api/v1/user")]
+    [Route("api/v1/users")]
     public class UserController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -65,7 +65,52 @@ namespace NetCoreReact.Controllers
             return Ok(new Response(HttpStatusCode.OK, data));
         }
 
-        [HttpPost("{id}/update-password")]
+        [HttpGet("")]
+        [ProducesResponseType(typeof(Response<List<GetAllUserResponse>>), 200)]
+        public ActionResult<Response> GetAll()
+        {
+            var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            _unitOfWork.SetIdentity(identity);
+
+            var userList = _unitOfWork.UserRepository.GetAll(x => x.Include(i => i.RoleNavigation));
+
+            var data = userList.Select(x => new GetAllUserResponse()
+            {
+                Id = x.Id,
+                Username = x.Username,
+                Role = x.RoleNavigation.Code,
+            });
+                      
+            return Ok(new Response(HttpStatusCode.OK, data));
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Response<GetSingleUserResponse>), 200)]
+        public ActionResult<Response> GetSingle([FromRoute] Guid id)
+        {
+            var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+            _unitOfWork.SetIdentity(identity);
+
+            var user = _unitOfWork.UserRepository.GetSingle(id, x => x.Include(i => i.RoleNavigation));
+
+            if (user == null)
+            {
+                return BadRequest(new Response(HttpStatusCode.BadRequest, "User not found"));
+            }
+
+            var data = new GetSingleUserResponse()
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Role = user.RoleNavigation.Code,
+            };
+
+            return Ok(new Response(HttpStatusCode.OK, data));
+        }
+
+        [HttpPatch("{id}/update-password")]
         [ProducesResponseType(typeof(Response<UpdatePasswordUserResponse>), 200)]
         public ActionResult<Response> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordUserRequest model)
         {
@@ -97,7 +142,7 @@ namespace NetCoreReact.Controllers
         }
 
         [Authorize(Roles = UserRole.Admin)]
-        [HttpPost("{id}/reset-password")]
+        [HttpPatch("{id}/reset-password")]
         [ProducesResponseType(typeof(Response<ResetPasswordUserResponse>), 200)]
         public ActionResult<Response> ResetPassword([FromRoute] Guid id, [FromBody] ResetPasswordUserRequest model)
         {
@@ -123,7 +168,7 @@ namespace NetCoreReact.Controllers
             return Ok(new Response(HttpStatusCode.OK));
         }
 
-        [HttpPost("{id}/delete")]
+        [HttpDelete("{id}/delete")]
         [ProducesResponseType(typeof(Response<DeleteUserResponse>), 200)]
         public ActionResult<Response> Delete([FromRoute] Guid id)
         {

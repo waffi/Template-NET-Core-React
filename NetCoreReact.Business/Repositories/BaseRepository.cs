@@ -32,6 +32,23 @@ namespace NetCoreReact.Business.Repositories
             return _context.Set<T>();
         }
 
+        public virtual IEnumerable<T> GetAll(Func<IQueryable<T>, IIncludableQueryable<T, object>> include, bool isNoTracking = false)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (isNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return query;
+        }
+
         public virtual IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
         {
             return _context.Set<T>().Where(predicate);

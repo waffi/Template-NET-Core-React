@@ -52,6 +52,28 @@ namespace NetCoreReact.Test.UnitTest
         }
 
         [Fact]
+        public void GetAll()
+        {
+            var actionResult = _userController.GetAll();
+            var objectResult = (ObjectResult)actionResult.Result;
+            var objectResultValue = (Response)objectResult.Value;
+
+            Assert.True(objectResult.StatusCode == (int)HttpStatusCode.OK, objectResultValue.Message);
+        }
+
+        [Fact]
+        public void GetSingle()
+        {
+            var id = Guid.Parse("0528BD60-3D92-43CC-BFB4-A0D117D65CB6");
+
+            var actionResult = _userController.GetSingle(id);
+            var objectResult = (ObjectResult)actionResult.Result;
+            var objectResultValue = (Response)objectResult.Value;
+
+            Assert.True(objectResult.StatusCode == (int)HttpStatusCode.OK, objectResultValue.Message);
+        }
+
+        [Fact]
         public void UpdatePassword()
         {
             var id = Guid.Parse("0528BD60-3D92-43CC-BFB4-A0D117D65CB6");

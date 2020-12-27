@@ -15,6 +15,8 @@ namespace NetCoreReact.Business.Repositories
 
         IEnumerable<T> GetAll();
 
+        IEnumerable<T> GetAll(Func<IQueryable<T>, IIncludableQueryable<T, object>> include, bool isNoTracking = false);
+
         IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate);
 
         IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>> include, bool isNoTracking = false);
