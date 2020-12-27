@@ -18,8 +18,10 @@ namespace NetCoreReact.Test.Fixture
 
         public UnitOfWorkFixture()
         {
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
             var optionsBuilder = new DbContextOptionsBuilder<SampleContext>();
-            optionsBuilder.UseSqlServer("Server=localhost;Database=Sample;User Id=admin;Password=admin123");
+            optionsBuilder.UseSqlServer(config["ConnectionStrings:DefaultConnection"]);
 
             UnitOfWork = new UnitOfWork(new SampleContext(optionsBuilder.Options));
         }

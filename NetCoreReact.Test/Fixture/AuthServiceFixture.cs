@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using NetCoreReact.Business.Models;
 using NetCoreReact.Business.UnitOfWork;
 using NetCoreReact.Controllers;
@@ -16,8 +17,10 @@ namespace NetCoreReact.Test.Fixture
 
         public AuthServiceFixture()
         {
-            var jwtSecret = "bRhYJRlZvBj2vW4MrV5HVdPgIE6VMtCFB0kTtJ1m";
-            var jwtLifespan = 2592000; // 30 days (in seconds)
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+            var jwtSecret = config["JWT:SecretKey"];
+            var jwtLifespan = int.Parse(config["JWT:Lifespan"]);
 
             AuthService = new AuthService(jwtSecret, jwtLifespan);
         }
