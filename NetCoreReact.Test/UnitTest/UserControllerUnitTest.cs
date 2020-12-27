@@ -54,13 +54,15 @@ namespace NetCoreReact.Test.UnitTest
         [Fact]
         public void UpdatePassword()
         {
+            var id = Guid.Parse("0528BD60-3D92-43CC-BFB4-A0D117D65CB6");
+
             var body = new UpdatePasswordUserRequest()
             {
                 OldPassword = "admin123",
                 NewPassword = "admin123",
             };
 
-            var actionResult = _userController.UpdatePassword(body);
+            var actionResult = _userController.UpdatePassword(id, body);
             var objectResult = (ObjectResult)actionResult.Result;
             var objectResultValue = (Response)objectResult.Value;
 

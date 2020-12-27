@@ -52,6 +52,7 @@ namespace NetCoreReact.Controllers
 
             var data = new LoginAuthResponse()
             {
+                Id = authData.Id,
                 Username = authData.Username,
                 Role = authData.Role,
                 Token = authData.Token,

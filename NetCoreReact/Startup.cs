@@ -33,6 +33,7 @@ namespace NetCoreReact
             services.AddDbContext<SampleContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
             });
 
             // Add JWT Authentication

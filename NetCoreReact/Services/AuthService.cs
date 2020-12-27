@@ -17,6 +17,7 @@ namespace NetCoreReact.Services
 {
     public class AuthData
     {
+        public Guid Id { get; set; }
         public string Username { get; set; }
         public string Role { get; set; }
         public string Token { get; set; }
@@ -55,6 +56,7 @@ namespace NetCoreReact.Services
 
             return new AuthData
             {
+                Id = user.Id,
                 Username = user.Username,
                 Role = user.RoleNavigation.Code,
                 Token = token,

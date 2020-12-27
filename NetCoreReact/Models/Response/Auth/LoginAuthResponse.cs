@@ -9,6 +9,7 @@ namespace NetCoreReact.Models.Response.Auth
 {
     public class LoginAuthResponse
     {
+        public Guid Id { get; set; }
         public string Username { get; set; }
         public string Role { get; set; }
         public string Token { get; set; }

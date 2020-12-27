@@ -53,6 +53,8 @@ namespace NetCoreReact.Controllers
             _unitOfWork.UserRepository.Add(user);
             _unitOfWork.SaveChanges();
 
+            user = _unitOfWork.UserRepository.GetSingle(user.Id, x => x.Include(i => i.RoleNavigation));
+
             var data = new CreateUserResponse()
             {
                 Id = user.Id,
@@ -63,17 +65,15 @@ namespace NetCoreReact.Controllers
             return Ok(new Response(HttpStatusCode.OK, data));
         }
 
-        [HttpPost("update-password")]
+        [HttpPost("{id}/update-password")]
         [ProducesResponseType(typeof(Response<UpdatePasswordUserResponse>), 200)]
-        public ActionResult<Response> UpdatePassword([FromBody] UpdatePasswordUserRequest model)
+        public ActionResult<Response> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordUserRequest model)
         {
             var identity = (ClaimsIdentity)HttpContext.User.Identity;
 
             _unitOfWork.SetIdentity(identity);
 
-            var user = _unitOfWork.UserRepository.GetSingle(
-               x => x.Username == identity.Name,
-               x => x.Include(i => i.RoleNavigation));
+            var user = _unitOfWork.UserRepository.GetSingle(id);
 
             if (user == null)
             {
@@ -97,7 +97,7 @@ namespace NetCoreReact.Controllers
         }
 
         [Authorize(Roles = UserRole.Admin)]
-        [HttpPost("reset-password/{id}")]
+        [HttpPost("{id}/reset-password")]
         [ProducesResponseType(typeof(Response<ResetPasswordUserResponse>), 200)]
         public ActionResult<Response> ResetPassword([FromRoute] Guid id, [FromBody] ResetPasswordUserRequest model)
         {
@@ -105,9 +105,7 @@ namespace NetCoreReact.Controllers
 
             _unitOfWork.SetIdentity(identity);
 
-            var user = _unitOfWork.UserRepository.GetSingle(
-               x => x.Id == id,
-               x => x.Include(i => i.RoleNavigation));
+            var user = _unitOfWork.UserRepository.GetSingle(id);
 
             if (user == null)
             {
@@ -125,7 +123,7 @@ namespace NetCoreReact.Controllers
             return Ok(new Response(HttpStatusCode.OK));
         }
 
-        [HttpPost("delete/{id}")]
+        [HttpPost("{id}/delete")]
         [ProducesResponseType(typeof(Response<DeleteUserResponse>), 200)]
         public ActionResult<Response> Delete([FromRoute] Guid id)
         {
@@ -137,6 +135,8 @@ namespace NetCoreReact.Controllers
 
             _unitOfWork.UserRepository.Delete(user);
             _unitOfWork.SaveChanges();
+
+            user = _unitOfWork.UserRepository.GetSingle(user.Id, x => x.Include(i => i.RoleNavigation));
 
             var data = new DeleteUserResponse()
             {
