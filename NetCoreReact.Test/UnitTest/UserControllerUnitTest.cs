@@ -23,7 +23,10 @@ namespace NetCoreReact.Test.UnitTest
 
         public UserControllerUnitTest(UnitOfWorkFixture unitOfWorkFixture, AuthServiceFixture authServiceFixture)
         {
+            // _userController = new UserController()
+
             _userController = new UserController(unitOfWorkFixture.UnitOfWork, authServiceFixture.AuthService);
+
             _userController.ControllerContext = new ControllerContext();
             _userController.ControllerContext.HttpContext = new DefaultHttpContext { User = ClaimsPrincipalMock.User() };
         }
